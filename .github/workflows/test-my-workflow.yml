@@ -1,0 +1,19 @@
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: test my workflow
+      uses: reubinoff/elastic-beanstalk-check
+      with:
+        region: eu-west-1
+        env-name: test
+        app-version-label: d
+        timeout: 300
