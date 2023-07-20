@@ -25,3 +25,5 @@ ENV/
 *.bak
 *.tmp
 *.swp
+
+.coverage
