@@ -1,5 +1,5 @@
 FROM python:3.11-slim
-LABEL org.opencontainers.image.source https://github.com/github/issue-metrics
+LABEL org.opencontainers.image.source https://github.com/reubinoff/elastic-beanstalk-check
 
 WORKDIR /action/workspace
 COPY requirements.txt *.py /action/workspace/
