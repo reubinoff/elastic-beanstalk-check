@@ -11,6 +11,7 @@ from botocore.exceptions import NoCredentialsError
 
 
 READY_STATUS = "Ready"
+TIME_SLEEP = int(os.environ.get('TIME_SLEEP', '5'))
 
 
 @dataclass
@@ -65,7 +66,8 @@ def set_output_env_vars(env_status: EnvironmentStatus):
     os.environ['OUTPUT_VERSION_LABEL'] = env_status.version_label
     os.environ['OUTPUT_STATUS'] = env_status.status
 
-def main() -> bool:
+
+def main(time_sleep=TIME_SLEEP) -> bool:
     """
     Main function for action
     """
@@ -81,7 +83,7 @@ def main() -> bool:
 
     env_status = get_environment_version(env_name, client)
     while is_env_ready(env_status, app_version_label) is False and (time.time() - start) < timeout:
-        time.sleep(5)
+        time.sleep(time_sleep)
         env_status = get_environment_version(env_name, region)
 
     set_output_env_vars(env_status)
