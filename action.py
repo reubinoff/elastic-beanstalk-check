@@ -84,7 +84,7 @@ def main(time_sleep=TIME_SLEEP) -> bool:
     env_status = get_environment_version(env_name, client)
     while is_env_ready(env_status, app_version_label) is False and (time.time() - start) < timeout:
         time.sleep(time_sleep)
-        env_status = get_environment_version(env_name, region)
+        env_status = get_environment_version(env_name, client)
 
     set_output_env_vars(env_status)
 
