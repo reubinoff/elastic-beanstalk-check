@@ -114,4 +114,3 @@ class TestSetOutputEnvVars(unittest.TestCase):
         self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], env_status.health_status)
         self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], env_status.version_label)
         self.assertEqual(os.environ['OUTPUT_STATUS'], env_status.status)
-        
