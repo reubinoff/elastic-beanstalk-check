@@ -70,8 +70,8 @@ def main() -> bool:
     """
     region = os.environ['INPUT_REGION']
     timeout = int(os.environ.get('INPUT_TIMEOUT', '60'))
-    env_name = os.environ['INPUT_ENV_NAME']
-    app_version_label = os.environ['INPUT_APP_VERSION_LABEL']
+    env_name = os.environ['INPUT_ENV-NAME']
+    app_version_label = os.environ['INPUT_APP-VERSION-LABEL']
     timeout = int(timeout)
     start = time.time()
 

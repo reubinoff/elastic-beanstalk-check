@@ -87,8 +87,8 @@ class TestMain(unittest.TestCase):
             # Call main function
             os.environ['INPUT_REGION'] = region
             os.environ['INPUT_TIMEOUT'] = str(timeout)
-            os.environ['INPUT_ENV_NAME'] = env_name
-            os.environ['INPUT_APP_VERSION_LABEL'] = app_version_label
+            os.environ['INPUT_ENV-NAME'] = env_name
+            os.environ['INPUT_APP-VERSION-LABEL'] = app_version_label
             main()
 
         # Check output
