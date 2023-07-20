@@ -7,6 +7,7 @@ import sys
 import time
 from dataclasses import dataclass
 from boto3.session import Session
+from botocore.exceptions import NoCredentialsError
 
 
 READY_STATUS = "Ready"
@@ -94,7 +95,15 @@ def main() -> bool:
 
 
 if __name__ == "__main__":
-    RESULT = main()
-    if RESULT is False:
+    try:
+        RESULT = main()
+        if RESULT is False:
+            sys.exit(1)
+    except NoCredentialsError as creds_ex:
+        print(f"Failed to get AWS credentials: {creds_ex}")
+        print("Did you set the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables?")
+        sys.exit(1)
+    except Exception as ex:
+        print(f"Unexpected error: {ex}")
         sys.exit(1)
     sys.exit(0)
