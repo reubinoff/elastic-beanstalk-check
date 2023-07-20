@@ -28,7 +28,8 @@ This action accepts the following inputs:
 * timeout: The maximum amount of time to wait for the Elastic Beanstalk environment to become ready.
 
 # Outputs
-This action does not produce any outputs.
-
+*  health-status: Elastic Beanstalk environment health status
+* version-label: Elastic Beanstalk application version label
+* status: Elastic Beanstalk environment status
 # License
 This action is licensed under the MIT License.
