@@ -58,17 +58,18 @@ def is_env_ready(env_status: EnvironmentStatus, app_version_label: str) -> bool:
     print(f"Status is ok: {status_is_ok}")
     return version_is_ok and status_is_ok
 
+def set_output(name, value):
+    """
+    Set output environment variable"""
+    with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output_file:
+        print(f'{name}={value}', file=output_file)
 
 def set_output_env_vars(env_status: EnvironmentStatus):
     """
     Set output environment variables"""
-    print(f'::set-output name=health-status::{env_status.health_status}')
-    print(f'::set-output name=version-label::{env_status.version_label}')
-    print(f'::set-output name=status::{env_status.status}')
-    os.environ['OUTPUT_HEALTH_STATUS'] = env_status.health_status
-    os.environ['OUTPUT_VERSION_LABEL'] = env_status.version_label
-    os.environ['OUTPUT_STATUS'] = env_status.status
-
+    set_output('health-status', env_status.health_status)
+    set_output('version-label', env_status.version_label)
+    set_output('status', env_status.status)
 
 def main(time_sleep=TIME_SLEEP) -> bool:
     """

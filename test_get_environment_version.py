@@ -13,6 +13,19 @@ from action import (
 )
 
 
+def convert_env_file_to_dict(env_file):
+    """
+    Convert environment file to dictionary"""
+    env_vars_output = {}
+    with open(env_file, 'r', encoding='utf-8') as env_file:
+        env_vars = env_file.readlines()
+        for env_var in env_vars:
+            name = env_var.split('=')[0]
+            value = env_var.split('=')[1].strip()
+            env_vars_output.update({name: value})
+    return env_vars_output
+
+
 class TestGetEnvironmentVersion(unittest.TestCase):
     """
     Test class for get_environment_version function"""
@@ -82,6 +95,7 @@ class TestGetEnvironmentVersion(unittest.TestCase):
 class TestMain(unittest.TestCase):
     """
     Test class for main function"""
+    @patch('os.environ', {'GITHUB_OUTPUT': 'output.txt'})
     @patch('action.Session')
     def test_main(self, mock_session):
         """
@@ -117,11 +131,13 @@ class TestMain(unittest.TestCase):
             main()
 
         # Check output
-        self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], 'Ok')
-        self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], app_version_label)
-        self.assertEqual(os.environ['OUTPUT_STATUS'], 'Ready')
+        env_vars = convert_env_file_to_dict('output.txt')
+        self.assertEqual(env_vars['health-status'], 'Ok')
+        self.assertEqual(env_vars['version-label'], app_version_label)
+        self.assertEqual(env_vars['status'], 'Ready')
 
     @patch('action.Session')
+    @patch('os.environ', {'GITHUB_OUTPUT': 'output.txt'})
     def test_main_version_label_wrong(self, mock_session):
         """
         Test main function with wrong version label
@@ -152,26 +168,29 @@ class TestMain(unittest.TestCase):
             main(0)
 
         # Check output
-        self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], 'Ok')
-        self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], 'v1.0.1')
-        self.assertEqual(os.environ['OUTPUT_STATUS'], 'Ready')
+        env_vars = convert_env_file_to_dict('output.txt')
+        self.assertEqual(env_vars['health-status'], 'Ok')
+        self.assertEqual(env_vars['version-label'], 'v1.0.1')
+        self.assertEqual(env_vars['status'], 'Ready')
 
 
 class TestSetOutputEnvVars(unittest.TestCase):
     """
     Test class for set_output_env_vars function"""
+    # @patch('builtins.open', mock_open())
+    @patch('os.environ', {'GITHUB_OUTPUT': 'output.txt'})
     def test_set_output_env_vars(self):
-        """
-        Test set_output_env_vars function
-        """
-        env_status = EnvironmentStatus(
-            version_label='v1.0.0',
+        """ Test set_output_env_vars function"""
+        # remove file if exists
+        if os.path.exists('output.txt'):
+            os.remove('output.txt')
+        mock_env_status = EnvironmentStatus(
+            version_label='v1.0.1',
             status='Ready',
             health_status='Ok'
         )
-
-        set_output_env_vars(env_status)
-
-        self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], env_status.health_status)
-        self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], env_status.version_label)
-        self.assertEqual(os.environ['OUTPUT_STATUS'], env_status.status)
+        set_output_env_vars(mock_env_status)
+        env_vars = convert_env_file_to_dict('output.txt')
+        self.assertEqual(env_vars['health-status'], 'Ok')
+        self.assertEqual(env_vars['version-label'], 'v1.0.1')
+        self.assertEqual(env_vars['status'], 'Ready')
