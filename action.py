@@ -49,10 +49,13 @@ def get_environment_version(env_name, client) -> EnvironmentStatus:
 def is_env_ready(env_status: EnvironmentStatus, app_version_label: str) -> bool:
     """
     Check if environment is ready"""
+    print(f"Checking if environment {env_status} is ready. Expected version: {app_version_label}")
     version_is_ok = env_status.version_label == app_version_label and app_version_label is not None
     if app_version_label is None:
         version_is_ok = True    # no version check required
+    print(f"Version is ok: {version_is_ok}")
     status_is_ok = env_status.status == READY_STATUS
+    print(f"Status is ok: {status_is_ok}")
     return version_is_ok and status_is_ok
 
 
