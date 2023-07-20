@@ -8,7 +8,7 @@ To use this action, you can add the following step to your workflow:
 
 ```yml
 - name: Check Elastic Beanstalk environment
-  uses: reubinoff/elastic-beanstalk-check@v1
+  uses: reubinoff/elastic-beanstalk-check@v2.0.4
   with:
     region: us-west-2
     env-name: my-environment
