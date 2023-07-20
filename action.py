@@ -56,7 +56,8 @@ def is_env_ready(env_status: EnvironmentStatus, app_version_label: str) -> bool:
 
 def main():
     """
-    Main function for action"""
+    Main function for action
+    """
     region = os.environ['INPUT_REGION']
     timeout = int(os.environ.get('INPUT_TIMEOUT', '60'))
     env_name = os.environ['INPUT_ENV_NAME']
