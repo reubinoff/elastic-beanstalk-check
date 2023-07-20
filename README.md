@@ -1,3 +1,5 @@
+[![Docker Image CI](https://github.com/reubinoff/elastic-beanstalk-check/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/reubinoff/elastic-beanstalk-check/actions/workflows/docker.yml)
+[![Python package](https://github.com/reubinoff/elastic-beanstalk-check/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/reubinoff/elastic-beanstalk-check/actions/workflows/python.yml)
 # elastic-beanstalk-check
 This GitHub Action checks the status of an Elastic Beanstalk environment and fails if the environment is not ready or if the version label does not match the expected label.
 
