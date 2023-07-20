@@ -1,0 +1,32 @@
+---
+name: 'eb-check'
+author: 'reubinoff'
+description: 'A GitHub Action to check AWS Elastic Beanstalk health and application version'
+inputs:
+  region:
+    description: 'AWS region'
+    required: true
+  timeout:
+    description: 'Timeout in seconds'
+    required: false
+    default: "60"
+  env-name:
+    description: 'Elastic Beanstalk environment name'
+    required: true
+  app-version-label:
+    description: 'Elastic Beanstalk application version label'
+    required: false
+
+outputs:
+  health-status:
+    description: 'Elastic Beanstalk environment health status'
+  version-label:
+    description: 'Elastic Beanstalk application version label'
+  status:
+    description: 'Elastic Beanstalk environment status'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'check-square'
+  color: 'white'
