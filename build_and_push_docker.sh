@@ -15,5 +15,7 @@ echo $CR_PAT | docker login ghcr.io -u $GH_UNAME --password-stdin
 
 docker build -t ghcr.io/reubinoff/elastic-beanstalk-check:$TAG .
 docker push ghcr.io/reubinoff/elastic-beanstalk-check:$TAG
+docker tag ghcr.io/reubinoff/elastic-beanstalk-check:$TAG ghcr.io/reubinoff/elastic-beanstalk-check:latest
+docker push ghcr.io/reubinoff/elastic-beanstalk-check:latest
 
 docker logout ghcr.io
