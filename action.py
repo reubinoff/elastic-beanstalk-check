@@ -54,7 +54,17 @@ def is_env_ready(env_status: EnvironmentStatus, app_version_label: str) -> bool:
     return version_is_ok and status_is_ok
 
 
-def main():
+def set_output_env_vars(env_status: EnvironmentStatus):
+    """
+    Set output environment variables"""
+    print(f'::set-output name=health-status::{env_status.health_status}')
+    print(f'::set-output name=version-label::{env_status.version_label}')
+    print(f'::set-output name=status::{env_status.status}')
+    os.environ['OUTPUT_HEALTH_STATUS'] = env_status.health_status
+    os.environ['OUTPUT_VERSION_LABEL'] = env_status.version_label
+    os.environ['OUTPUT_STATUS'] = env_status.status
+
+def main() -> bool:
     """
     Main function for action
     """
@@ -73,17 +83,18 @@ def main():
         time.sleep(5)
         env_status = get_environment_version(env_name, region)
 
-    print(f'::set-output name=health-status::{env_status.health_status}')
-    print(f'::set-output name=version-label::{env_status.version_label}')
-    print(f'::set-output name=status::{env_status.status}')
+    set_output_env_vars(env_status)
 
     if is_env_ready(env_status, app_version_label) is False:
         print(f"""Fail. Expected version {app_version_label}
                but got {env_status.version_label}. Status: {env_status.status}""")
-        sys.exit(1)
+        return False
 
-    sys.exit(0)
+    return True
 
 
 if __name__ == "__main__":
-    main()
+    RESULT = main()
+    if RESULT is False:
+        sys.exit(1)
+    sys.exit(0)

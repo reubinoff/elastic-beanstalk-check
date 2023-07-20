@@ -2,9 +2,15 @@
 Test class for get_environment_version function"""
 
 import unittest
-from unittest.mock import patch
-from action import get_environment_version, EnvironmentStatus, READY_STATUS
-
+import os
+from unittest.mock import patch, MagicMock
+from action import (
+    get_environment_version,
+    EnvironmentStatus,
+    READY_STATUS,
+    main,
+    set_output_env_vars
+)
 
 class TestGetEnvironmentVersion(unittest.TestCase):
     """
@@ -47,3 +53,65 @@ class TestGetEnvironmentVersion(unittest.TestCase):
         mock_eb.describe_environments.assert_called_once_with(
             EnvironmentNames=[env_name]
         )
+
+class TestMain(unittest.TestCase):
+    """
+    Test class for main function"""
+    @patch('action.Session')
+    def test_main(self, mock_session):
+        """
+        Test main function
+        """
+        mock_client = MagicMock()
+        mock_session.return_value.client.return_value = mock_client
+
+        env_name = 'my-environment'
+        app_version_label = 'v1.0.0'
+        timeout = 60
+        region = 'us-west-2'
+
+        # Set up mock environment status
+        mock_env_status = EnvironmentStatus(
+            version_label=app_version_label,
+            status='Ready',
+            health_status='Ok'
+        )
+        mock_get_env_version = MagicMock(return_value=mock_env_status)
+
+        # Set up mock time
+        mock_time = MagicMock()
+        mock_time.time.side_effect = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+
+        with patch('action.get_environment_version', mock_get_env_version), \
+             patch('action.time', mock_time):
+            # Call main function
+            os.environ['INPUT_REGION'] = region
+            os.environ['INPUT_TIMEOUT'] = str(timeout)
+            os.environ['INPUT_ENV_NAME'] = env_name
+            os.environ['INPUT_APP_VERSION_LABEL'] = app_version_label
+            main()
+
+        # Check output
+        self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], 'Ok')
+        self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], app_version_label)
+        self.assertEqual(os.environ['OUTPUT_STATUS'], 'Ready')
+
+class TestSetOutputEnvVars(unittest.TestCase):
+    """
+    Test class for set_output_env_vars function"""
+    def test_set_output_env_vars(self):
+        """
+        Test set_output_env_vars function
+        """
+        env_status = EnvironmentStatus(
+            version_label='v1.0.0',
+            status='Ready',
+            health_status='Ok'
+        )
+
+        set_output_env_vars(env_status)
+
+        self.assertEqual(os.environ['OUTPUT_HEALTH_STATUS'], env_status.health_status)
+        self.assertEqual(os.environ['OUTPUT_VERSION_LABEL'], env_status.version_label)
+        self.assertEqual(os.environ['OUTPUT_STATUS'], env_status.status)
+        
